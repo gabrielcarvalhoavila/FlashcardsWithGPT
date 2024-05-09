@@ -20,7 +20,7 @@ public class ChatGPTService {
     private static final String MODEL = "gpt-3.5-turbo-0125";
 
 
-    public static String chatGPTRequest(String prompt) throws IOException, InterruptedException {
+    public static String chatGPTRequest(String prompt) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
 
 
@@ -41,7 +41,7 @@ public class ChatGPTService {
         }
     }
 
-    public static ChatRequest createChatRequest(String prompt) throws IOException, InterruptedException {
+    public static ChatRequest createChatRequest(String prompt) {
         return new ChatRequest(
                 MODEL,
                 List.of(new ChatRequest.Message("user", prompt)),
@@ -54,7 +54,6 @@ public class ChatGPTService {
         JsonNode contentNode = rootNode.path("choices").get(0).path("message").path("content");
         List<ChatContentResponse> lista_dto = new ArrayList<>();
 
-        // Check if contentNode is not null and extract the content
         if (!contentNode.isMissingNode()) {
             String content = contentNode.asText();
             final String[] split = content.split("END");
