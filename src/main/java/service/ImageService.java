@@ -11,7 +11,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 public class ImageService {
-    private final static String CUSTOM_SEARCH_API_KEY = System.getenv("CUSTOM_SEARCH_API_KEY");//"AIzaSyAuYANnQzenBkuiC0y1KZqntu7IoJ46_-s";
+    private final static String CUSTOM_SEARCH_API_KEY = System.getenv("CUSTOM_SEARCH_API_KEY");
     private final static String SEARCH_ENGINE_ID = "400ca9bb708684fd0";
     private final static String BASE_URL = "https://www.googleapis.com/customsearch/v1";
     private final HttpClient httpClient = HttpClient.newHttpClient();
