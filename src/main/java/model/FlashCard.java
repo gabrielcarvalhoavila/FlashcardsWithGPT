@@ -36,6 +36,14 @@ public class FlashCard {
         this.fileName = "image_" + this.word.replaceAll(" ", "_") + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")) + ".jpg";
     }
 
+    public FlashCard(ChatContentResponse response) {
+        this.word = response.word();
+        this.phrase = response.phrase();
+        this.definition = response.definition();
+        this.synonyms = response.synonyms();
+        this.fileName = "image_" + this.word.replaceAll(" ", "_") + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")) + ".jpg";
+    }
+
     public FlashCard(String word, String phrase, String definition, String synonyms, String imageUrl) {
         this.word = word;
         this.phrase = phrase;

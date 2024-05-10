@@ -4,6 +4,8 @@ import service.ImageService;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static Utils.ChatGPTPrompt.getGPTPrompt;
 import static Utils.FileUtils.readWordsFromFile;
@@ -19,11 +21,32 @@ public class Main {
         String prompt = getGPTPrompt(words);
         String response = chatGPTRequest(prompt);
 
+        Map<String, List<FlashCard>> wordFlashCardMap;
+
+
+        wordFlashCardMap = filterResponseFromGPT(response)
+                .stream()
+                .map(FlashCard::new)
+                .collect(Collectors.groupingBy(FlashCard::getWord));
+
+
+        for (List<FlashCard> flashCards : wordFlashCardMap.values()) {
+            int size = flashCards.size();
+            List<String> imageUrlsFromGoogle = imageService.getImageUrlFromGoogle(flashCards.get(0).getWord(), size);
+            for (int i = 0; i < size; i++) {
+                FlashCard f = flashCards.get(i);
+                f.setFileName(f.getFileName().replace(".jpg", "_" + i + ".jpg"));
+                f.setImageUrl(imageUrlsFromGoogle.get(i));
+            }
+        }
+
         List<FlashCard> flashCards =
-                filterResponseFromGPT(response)
-                        .stream()
-                        .map(r -> new FlashCard(r, imageService.getImageUrlFromGoogle(r.word())))
-                        .toList();
+                wordFlashCardMap.values()
+                .stream()
+                .flatMap(List::stream)
+                .toList();
+
+
         System.out.println("Flashcards: " + flashCards);
 
         for (FlashCard f : flashCards) {
