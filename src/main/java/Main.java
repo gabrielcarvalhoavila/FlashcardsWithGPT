@@ -13,18 +13,18 @@ import static service.ChatGPTService.chatGPTRequest;
 import static service.ChatGPTService.filterResponseFromGPT;
 
 public class Main {
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException {
 
         AnkiService ankiService = new AnkiService();
         ImageService imageService = new ImageService();
         List<String> words = readWordsFromFile("ingles.txt");
         String prompt = getGPTPrompt(words);
-        String response = chatGPTRequest(prompt);
+        String responseFromGPT = chatGPTRequest(prompt);
 
         Map<String, List<FlashCard>> wordFlashCardMap;
 
 
-        wordFlashCardMap = filterResponseFromGPT(response)
+        wordFlashCardMap = filterResponseFromGPT(responseFromGPT)
                 .stream()
                 .map(FlashCard::new)
                 .collect(Collectors.groupingBy(FlashCard::getWord));

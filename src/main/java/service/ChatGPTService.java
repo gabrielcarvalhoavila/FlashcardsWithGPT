@@ -5,12 +5,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import json.ChatContentResponse;
 import json.ChatRequest;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,34 +16,22 @@ public class ChatGPTService {
     private static final String BASE_URL = "https://api.openai.com/v1/chat/completions";
     private static final String API_KEY = System.getenv("OPENAI_API_KEY");
     private static final String MODEL = "gpt-3.5-turbo-0125";
+    private static final RestTemplate restTemplate = new RestTemplate();
 
 
-    public static String chatGPTRequest(String prompt) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
+    public static String chatGPTRequest(String prompt) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + API_KEY);
+        headers.set("Content-Type", "application/json");
 
-
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL))
-                .header("Authorization", "Bearer " + API_KEY)
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(createChatRequest(prompt))))
-                .build();
-
-        try {
-            HttpResponse<String> response =
-                    client.send(request, HttpResponse.BodyHandlers.ofString());
-            return response.body();
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        return restTemplate.postForObject(BASE_URL, new HttpEntity<>(createChatRequest(prompt), headers), String.class);
     }
 
     public static ChatRequest createChatRequest(String prompt) {
         return new ChatRequest(
                 MODEL,
                 List.of(new ChatRequest.Message("user", prompt)),
-                0.7);
+                1);
     }
 
     public static List<ChatContentResponse> filterResponseFromGPT(String response) throws JsonProcessingException {

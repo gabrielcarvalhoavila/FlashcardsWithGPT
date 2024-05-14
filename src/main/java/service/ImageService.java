@@ -22,8 +22,7 @@ public class ImageService {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "?key=" + CUSTOM_SEARCH_API_KEY + "&cx=" + SEARCH_ENGINE_ID
                         + "&q="+query.replaceAll(" ", "%20") + "&searchType=image" + "&num=" + num +
-                        "&siteSearchFilter=e&siteSearch=www.facebook.com%2C%20www.instagram.com%2C%20www.reddit.com"+
-                        "imgSize=small"))
+                        "&siteSearchFilter=e&siteSearch=www.facebook.com%2C%20www.instagram.com%2C%20www.reddit.com%2C%20www.tiktok.com"))
                 .header("Content-Type", "application/json")
                 .GET()
                 .build();
